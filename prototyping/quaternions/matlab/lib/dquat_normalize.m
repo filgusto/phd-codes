@@ -6,10 +6,17 @@ function dq_out = dquat_normalize(dq_in)
 % Output
 % - dq_out: 8D output normalized dual-quaternion
 
-% obtains the input norm
-norm = dquat_norm(dq_in);
+% partify the dual-quaternion into two quaternions (scalar and dual parts)
+[dq_in_scalar, dq_in_dual] = dquat_partify(dq_in);
 
-% normalizes the input quaternion
-dq_out = dq_in./norm;
+% the scalar part magnitude
+mag = dot(dq_in_scalar.compact, dq_in_scalar.compact);
+
+% normalizes both parts
+dq_out_scalar = dq_in_scalar * (1/mag);
+dq_out_dual = dq_in_dual * (1/mag);
+
+dq_out = [dq_out_scalar.compact.';dq_out_dual.compact.'];
+
 end
 
