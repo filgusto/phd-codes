@@ -30,3 +30,14 @@
 *.exe
 *.out
 *.app
+
+# Intelij additions
+.idea/
+
+# Visual Studio additions
+.vs/
+vs/
+*.sln
+*.csproj
+bin/
+obj/
