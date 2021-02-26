@@ -33,6 +33,7 @@
 
 # Intelij additions
 .idea/
+cmake-build-debug/
 
 # Visual Studio additions
 .vs/
