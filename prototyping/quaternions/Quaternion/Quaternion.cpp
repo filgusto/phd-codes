@@ -12,9 +12,7 @@ Quaternion::Quaternion(){
     this->z = 0;
 }
 
-
 Quaternion::Quaternion(double w, double x, double y, double z) : w(w), x(x), y(y), z(z) {}
-
 
 Quaternion::Quaternion(double *q){
     this->w = *(q);
@@ -41,12 +39,10 @@ void Quaternion::setZ(double z) { Quaternion::z = z; }
 
 // Sum operator
 Quaternion Quaternion::operator+ (const Quaternion& rhs){
-    Quaternion q_res;
-    q_res.w = this->w + rhs.w;
-    q_res.x = this->x + rhs.x;
-    q_res.y = this->y + rhs.y;
-    q_res.z = this->z + rhs.z;
-    return q_res;
+    return Quaternion(this->w + rhs.w,
+                      this->x + rhs.x,
+                      this->y + rhs.y,
+                      this->z + rhs.z);
 }
 
 
