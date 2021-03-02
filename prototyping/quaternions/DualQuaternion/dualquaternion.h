@@ -1,19 +1,17 @@
 #ifndef DUALQUATERNION_DUALQUATERNION_H
 #define DUALQUATERNION_DUALQUATERNION_H
 
-// Class definition
+/* Class definition */
 class DualQuaternion{
 private:
-    int a;
+    int q_scalar;
+    int q_dual;
+
 
 public:
 
     // Constructor
     DualQuaternion();
-
-    // getters and setters
-    int getA() const;
-    void setA(int a);
 };
 
 #endif //DUALQUATERNION_DUALQUATERNION_H

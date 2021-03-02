@@ -5,13 +5,11 @@
 #include "dualquaternion.h"
 using namespace std;
 
+#define PRINT_Q(dq,n) cout << "dq" << n << ": [w:" << q.getW() << ", x:" << q.getX() << ", y:"<< q.getY() << ", z:" << q.getZ() << "]\n";
+
 int main(){
 
     cout << "Main running..." << endl;
-
-    DualQuaternion q1;
-    q1.setA(3.3);
-    cout << " A value: " << q1.getA() << endl;
-
+    
     return 0;
 }

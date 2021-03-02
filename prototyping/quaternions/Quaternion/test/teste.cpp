@@ -1,13 +1,15 @@
 //
 // Created by Filipe Rocha on 01/03/21.
 //
+#include "../Quaternion.h"     // self header
+
+/* essential includes */
 #include <iostream>
 
-#include "Quaternion.h"
-
+/* namespace */
 using namespace std;
 
-// defining macros
+/* defining macros */
 #define PRINT_Q(q,n) cout << "q" << n << ": [w:" << q.getW() << ", x:" << q.getX() << ", y:"<< q.getY() << ", z:" << q.getZ() << "]\n";
 
 int main(){
