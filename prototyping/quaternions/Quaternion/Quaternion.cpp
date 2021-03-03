@@ -1,6 +1,4 @@
 #include "Quaternion.h"
-#include <iostream>
-#include <cmath>
 
 #define DEBUG
 

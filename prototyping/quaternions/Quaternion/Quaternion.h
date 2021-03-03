@@ -1,6 +1,8 @@
 #ifndef QUATERNION_QUATERNION_H
 #define QUATERNION_QUATERNION_H
 
+#include <cmath>
+
 /* Class definition */
 class Quaternion{
 private:

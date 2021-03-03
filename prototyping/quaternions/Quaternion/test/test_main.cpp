@@ -3,24 +3,24 @@
 //
 #include "../Quaternion.h"     // self header
 
-/* essential includes */
+// essential includes
 #include <iostream>
 
-/* namespace */
+// namespace
 using namespace std;
 
-/* defining macros */
+// defining macros
 #define PRINT_Q(q,n) cout << "q" << n << ": [w:" << q.getW() << ", x:" << q.getX() << ", y:"<< q.getY() << ", z:" << q.getZ() << "]\n";
 
 int main(){
 
     cout << "Teste running..." << endl;
 
-    /* Creating two quaternions value arrays */
+    // Creating two quaternions value arrays
     double q1_val[4] = {0.3, 2.1, -1.3, 33};
     double q2_val[4] = {11.2, 1, 7, -13};
 
-    /* Creating two quaternions objects */
+    // Creating two quaternions objects
     Quaternion q1(q1_val);    // way 1
     Quaternion q2(q2_val[0], q2_val[1], q2_val[2], q2_val[3]);   // way 2
 
