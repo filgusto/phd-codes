@@ -58,5 +58,22 @@ int main(){
     PRINT_Q(q7, 7);
     cout << "q7_mag = " << q7.Magnitude() << endl;
 
+    // Dot product
+    double dot_prod;
+    dot_prod = q7.Dot(q5);
+    cout << "q7 dot q5 = " << dot_prod << endl;
+
+    // convert from yaw pitch roll to quaternion
+    cout << "\n" ;
+    Quaternion q8;
+    q8 = Quaternion::YawPitchRoll2Quaternion(0, 3.14f, 0);
+    PRINT_Q(q8, 8);
+
+    // convert from quaternion to yaw pitch roll
+    double q8_ypr[3];
+    Quaternion::Quaternion2YawPitchRoll(q8, q8_ypr);
+    cout << "Quaternion q8 to yaw pitch roll: " << q8_ypr[0] << ", " << q8_ypr[1] << ", " << q8_ypr[2] << endl;
+
+
     return 0;
 }

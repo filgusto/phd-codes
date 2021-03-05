@@ -2,6 +2,7 @@
 #define QUATERNION_QUATERNION_H
 
 #include <cmath>
+#include <vector>
 
 /* Class definition */
 class Quaternion{
@@ -15,12 +16,12 @@ private:
 
 public:
 
-    /* Constructors */
+    /* == Constructors == */
     Quaternion();
     Quaternion(double w, double x, double y, double z);
     Quaternion(double *q);
 
-    /* Getters and Setters */
+    /* == Getters and Setters  == */
     double getW() const;
     void setW(double w);
     double getX() const;
@@ -30,16 +31,21 @@ public:
     double getZ() const;
     void setZ(double z);
 
-    /* Operators */
+    /* == Operators == */
     Quaternion operator+ (const Quaternion& rhs);
     Quaternion operator* (const Quaternion& rhs);
     Quaternion operator* (const double rhs);
+    Quaternion operator*= (const double rhs);
 
-    /* Manipulation */
+    /* == Manipulation == */
     Quaternion Conjugate();
     double Magnitude();
     Quaternion Normalize();
+    double Dot(const Quaternion rhs);
 
+    /* == Conversions == */
+    static Quaternion YawPitchRoll2Quaternion(double yaw, double pitch, double roll);
+    static void Quaternion2YawPitchRoll(Quaternion q, double (&ret_ypr)[3]);
 };
 
 #endif //QUATERNION_QUATERNION_H
