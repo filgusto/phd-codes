@@ -85,36 +85,30 @@ void DualQuaternion::DualQuaternion2THMatrix(DualQuaternion dq, double (&ret_M)[
     // normalizes the input quaternion
     DualQuaternion dq_n = dq.Normalize();
 
-    // Extracting rotation quaternion
-    Quaternion q_s = dq.getQscalar();
-    double w = q_s.getW();
-    double x = q_s.getX();
-    double y = q_s.getY();
-    double z = q_s.getZ();
+    // extracts the rotation matrix and saves to ret_rotM
+    double ret_rotM[3][3];
+    DualQuaternion::ExtractRotM(dq, ret_rotM);
 
-    // Converting rotation information to rotation matrix
-    ret_M[0][0] = w * w + x * x - y * y - z * z;
-    ret_M[1][0] = 2 * x * y + 2 * w * z;
-    ret_M[2][0] = 2 * x * z - 2 * w * y;
-    ret_M[0][1] = 2 * x * y - 2 * w * z;
-    ret_M[1][1] = w * w + y * y - x * x - z * z;
-    ret_M[2][1] = 2 * y * z + 2 * w * x;
-    ret_M[0][2] = 2 * x * z + 2 * w * y;
-    ret_M[1][2] = 2 * y * z - 2 * w * x;
-    ret_M[2][2] = w * w + z * z - x * x - y * y;
+    // inserts rotM values inside the homogeneous transform
+    for (int i=0; i<3; i++){
+        for (int j=0; j<3; j++){
+            ret_M[i][j] = ret_rotM[i][j];
+        }
+    }
 
-    // Extracts the translation information
-    Quaternion q_t = (dq.getQdual() * 2.0f) * q_s.Conjugate();  // computing the "translation" quaternion
-    ret_M[0][3] = q_t.getX();
-    ret_M[1][3] = q_t.getY();
-    ret_M[2][3] = q_t.getZ();
+    // extracts the translation vector and saves to ret_transl
+    double ret_transl[3];
+    DualQuaternion::ExtractTransl(dq, ret_transl);
 
-    // finishing to mound the homogeneous transform matrix
+    for (int i=0; i<3; i++){
+        ret_M[i][3] = ret_transl[i];
+    }
+
+    // finishing mounting the homogeneous transform matrix
     ret_M[3][0] = 0;
     ret_M[3][1] = 0;
     ret_M[3][2] = 0;
     ret_M[3][3] = 1;
-
 }
 
 /* Extracts the Rotation matrix from a quaternion */
@@ -141,6 +135,18 @@ void DualQuaternion::ExtractRotM(DualQuaternion dq, double (&ret_M)[3][3]){
     ret_M[1][2] = 2 * y * z - 2 * w * x;
     ret_M[2][2] = w * w + z * z - x * x - y * y;
 
+}
+
+/* Extracts the translation vector */
+void DualQuaternion::ExtractTransl(DualQuaternion dq, double (&ret_T)[3]){
+
+    // adequates the translation vector
+    Quaternion t = (dq.getQdual() * 2.0f) * (dq.getQscalar()).Conjugate();
+
+    // Fills the returning vector
+    ret_T[0] = t.getX();    // x coordinate
+    ret_T[1] = t.getY();    // y coordinate
+    ret_T[2] = t.getZ();    // z coordinate
 }
 
 

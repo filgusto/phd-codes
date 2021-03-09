@@ -114,7 +114,6 @@ int main(){
     DualQuaternion::DualQuaternion2THMatrix(dq_3, mat);
     print_TH(mat, 1);
 
-
     cout << "\n\nMain finished..." << endl;
     
     return 0;

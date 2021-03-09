@@ -36,10 +36,7 @@ public:
     /* == Conversions and utilities == */
     static void DualQuaternion2THMatrix(const DualQuaternion dq, double (&ret_M)[4][4]);
     static void ExtractRotM(DualQuaternion dq, double (&ret_M)[3][3]);
-    // TODO create ExtractTransl and substitute them in DualQuaternion2THMatrix
-
-
-
+    static void ExtractTransl(DualQuaternion dq, double (&ret_T)[3]);
 };
 
 #endif //DUALQUATERNION_DUALQUATERNION_H
