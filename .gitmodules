@@ -1,3 +1,6 @@
 [submodule "prototyping/quaternions/Quaternion"]
 	path = prototyping/quaternions/Quaternion
 	url = https://github.com/filRocha/lib_quaternion.git
+[submodule "prototyping/quaternions/DualQuaternion"]
+	path = prototyping/quaternions/DualQuaternion
+	url = https://github.com/filRocha/lib_dualquaternion.git
