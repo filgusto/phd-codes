@@ -46,6 +46,11 @@ base.set_frame_displacement(x_bm);
 robot = DQ_WholeBody(base);
 robot.add(arm);
 
+%% Saving variables to file
+save('model_dq_1');
+
+
+
 
 
 
