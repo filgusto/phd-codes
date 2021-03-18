@@ -39,13 +39,30 @@ t_t = 0;
 t_i = 1;
 while norm(e(:,end)) > error_tol
 
-    % updating control
+    %%  updating control
+    
+    % obtains the jacobian relating joints position and
+    % end-effector dual quaternion terms velocities
     J = lwr4.pose_jacobian(q);
+    
+    % obtains the end-effector pose state given the joints state
     x{t_i} = lwr4.fkm(q);
+    
+    % directly computes error by subtracting the current pose dual
+    % quaternion by the desired pose dual quaternion
     e(:,t_i) = vec8(x{end}-xd);
-    u = -pinv(J)* gain*e(:,end);
+    
+    % traditionally computes the control signal given the jacobian, gain
+    % and computed error
+    u = -pinv(J)* gain * e(:,end);
+    
+    %% control signal integration
+    
+    % integrates the control signal to the joints states
     q = q + T*u;
-
+    
+    %% after computations
+        
     % saving auxiliary values 
     e_norm(t_i) = norm(e(:,end));
 
