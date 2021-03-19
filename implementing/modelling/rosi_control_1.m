@@ -2,11 +2,17 @@
 % Adorno, 2020, DQ Robotics: a Library for Robot Modeling and Control
 clear all;
 clc;
+close all;
 
 %% preamble
 
+% inform where the phd-codes folder is located for finding related code
+folder_phd_codes = '/home/filipe/gitSources/doc/phd-codes';
+
 % adding subfolder to path
 addpath('./lib/');
+addpath(strcat(folder_phd_codes,'/prototyping/dq-robotics/lib')); 
+addpath(strcat(folder_phd_codes,'/matlab/lib/plot'));
 
 % loading modelling variables
 load('model_dq_1.mat');
@@ -14,12 +20,12 @@ load('model_dq_1.mat');
 %% parameters
 
 % declaring set-point
-r = 0.0 - 0.5509*i_ - 0.0342*j_ + 1.0364*k_;
-p = -0.5509* i_ + -1.0342* j_ + 1.0364* k_;
+r = 0.0191 + 0*i_ + 0.9999*j_ + 0.0*k_;
+p = -0.5398* i_ + 0* j_ + 1.4678* k_;
 xd = r + E_ *0.5* p*r;
 
 % controller gain
-gain = 10;
+gain = 1;
 
 % error tolerance
 error_tol = 0.01;
@@ -33,8 +39,8 @@ ros_gentle_init();
 sub_manipulator_joints_pos = rossubscriber('/manipulator/sensor/joints_pos', 'sim_rosi/ManipulatorJoints');
 sub_rosi_pose = rossubscriber('/rosi/cheat/rosi_pose', 'geometry_msgs/PoseStamped');
 
-pub_traction_speed = rospublisher('/rosi/command_traction_speed', 'sim_rosi/RosiMovementArray');
-pub_ % TODO manipulador deve aceitar comando de velocidade
+pub_traction_speed = rospublisher('/rosi/cmd/traction_speed', 'sim_rosi/RosiMovementArray');
+pub_manipulator_speed = rospublisher('/manipulator/cmd/joints_vel_target', 'sim_rosi/ManipulatorJoints'); % TODO manipulador deve aceitar comando de velocidade
 
 
 %% Control
@@ -43,10 +49,22 @@ pub_ % TODO manipulador deve aceitar comando de velocidade
 e = ones(8,1);
 
 % control loop
+hist_q = {};
+hist_x = {};
+hist_xd = {};
+hist_e = {};
+hist_u = {};
+
+
+i_f = 1;
 while norm(e) > error_tol
+    
+    %% updating variables
     
     % receiving robot joints vector from ROS
     q = ros_retrieve_joints(sub_rosi_pose, sub_manipulator_joints_pos);
+    
+    %% control update
     
     % obtains the jacobian relating joints position and
     % end-effector dual quaternion terms velocities
@@ -65,17 +83,22 @@ while norm(e) > error_tol
 
     % mapping wheels speed to configuration space velocities
     u = -pinv(J)*gain*e;
-
-    % TODO send u to the simulator
     
-    disp('hi');
+    %% sending command to the robot
     
+    % sends the commands to the robot
+    ros_send_robot_cmd_vel(u, pub_traction_speed, pub_manipulator_speed);
+    
+    %% saving varibles history
+    hist_q{i_f} = q;
+    hist_x{i_f} = x;
+    hist_xd{i_f} = xd;
+    hist_e{i_f} = e;
+    hist_u{i_f} = u;
+    
+    %% integrating iterative variable
+    i_f = i_f + 1;
 end
-
-
-
-
-
 
 
 % shutting down ros connection

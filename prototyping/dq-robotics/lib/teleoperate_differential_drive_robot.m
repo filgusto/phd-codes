@@ -56,6 +56,7 @@ function teleoperate_differential_drive_robot(varargin)
         % Get the information updated by the keypress() function
         S = guidata(fig_handle);
         % update robot configuration and draw it
+        S.u
         q = q + T * base.constraint_jacobian(q(3))*S.u;
         plot(base,q);
         drawnow;
