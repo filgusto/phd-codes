@@ -6,23 +6,12 @@ close all;
 
 %% preamble
 
-% inform where the phd-codes folder is located for finding related code
-folder_phd_codes = '/home/filipe/gitSources/doc/phd-codes';
-
-% adding subfolder to path
-addpath('./lib/');
-addpath(strcat(folder_phd_codes,'/prototyping/dq-robotics/lib')); 
-addpath(strcat(folder_phd_codes,'/matlab/lib/plot'));
+preamble;
 
 % loading modelling variables
 load('model_dq_1.mat');
 
 %% parameters
-
-% declaring set-point
-r = 0.0191 + 0*i_ + 0.9999*j_ + 0.0*k_;
-p = -0.5398* i_ + 0* j_ + 1.4678* k_;
-xd = r + E_ *0.5* p*r;
 
 % controller gain
 gain = 1;
@@ -37,11 +26,20 @@ ros_gentle_init();
 
 % subscribing to topics
 sub_manipulator_joints_pos = rossubscriber('/manipulator/sensor/joints_pos', 'sim_rosi/ManipulatorJoints');
-sub_rosi_pose = rossubscriber('/rosi/cheat/rosi_pose', 'geometry_msgs/PoseStamped');
+sub_rosi_pose = rossubscriber('/rosi/cheat/rosi_pose', 'bj_libraries/DualQuaternionStamped');
+sub_sp = rossubscriber('/sim/pose/dummy_1','bj_libraries/DualQuaternionStamped');
 
 pub_traction_speed = rospublisher('/rosi/cmd/traction_speed', 'sim_rosi/RosiMovementArray');
 pub_manipulator_speed = rospublisher('/manipulator/cmd/joints_vel_target', 'sim_rosi/ManipulatorJoints'); % TODO manipulador deve aceitar comando de velocidade
 
+
+%% Set-point
+
+% receiving setpoint from ROS
+sp_msg = receive(sub_sp, 3);
+
+% converting to dq library dual quaternion format
+xd = dq2dqmat(sp_msg);
 
 %% Control
 
@@ -57,6 +55,7 @@ hist_u = {};
 
 
 i_f = 1;
+disp('Control loop initiated...');
 while norm(e) > error_tol
     
     %% updating variables
