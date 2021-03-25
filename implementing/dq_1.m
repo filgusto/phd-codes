@@ -15,13 +15,13 @@ wf = (1 + 0*i_ + 0*j_ + 0*k_) + (0 + 0*i_ + 0*j_ + 0*k_)*E_;
 sub_robot_pose = rossubscriber('/rosi/cheat/rosi_pose', 'bj_libraries/DualQuaternionStamped');
 sub_mani_base_pose = rossubscriber('/rosi/cheat/mani_base_pose', 'bj_libraries/DualQuaternionStamped');
 sub_mani_tcp_pose = rossubscriber('/rosi/cheat/tcp_pose', 'bj_libraries/DualQuaternionStamped');
-sub_sp = rossubscriber('/sim/pose/dummy_1','bj_libraries/DualQuaternionStamped');
+sub_setpoint = rossubscriber('/sim/pose/dummy_1','bj_libraries/DualQuaternionStamped');
 
 % receiving messages
 robot_pose_data = receive(sub_robot_pose, 3);
 mani_base_pose_data = receive(sub_mani_base_pose, 3);
 mani_tcp_pose_data = receive(sub_mani_tcp_pose, 3);
-sp_pose_data = receive(sub_sp, 3);
+sp_pose_data = receive(sub_setpoint, 3);
 
 % converting to dual quaternion library language
 robot_pose = dq2dqmat(robot_pose_data);
