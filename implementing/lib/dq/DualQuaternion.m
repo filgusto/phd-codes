@@ -1,4 +1,4 @@
-classdef DualQuaternion
+classdef DualQuaternion 
     % Class for manipulating DualQuaternion objects
     
     properties
@@ -55,7 +55,7 @@ classdef DualQuaternion
             obj.q_p = quaternion(cos(r_angle/2),...
                                  r_axis(1) * sin_angle_div_2,...
                                  r_axis(2) * sin_angle_div_2,...
-                                 r_axis(3) * sin_angle_div_2):
+                                 r_axis(3) * sin_angle_div_2);
             obj.q_d = quaternion(0,0,0,0);
             
         end
@@ -154,6 +154,16 @@ classdef DualQuaternion
            th = [[rotm,tr.'];[0, 0, 0, 1]];
        end
        
+      %% === INTERFACES
+     
+      % overrides disp function
+      function disp(obj)
+          q_p = obj.q_p.compact;
+          q_d = obj.q_d.compact;
+          
+          fprintf('(%d + %di + %dj + %dk) + (%d + %di + %dj + %dk)ε \n\n', ...
+                    q_p(1), q_p(2), q_p(3), q_p(4), q_d(1), q_d(2), q_d(3), q_d(4));
+      end
        
     end
 end
