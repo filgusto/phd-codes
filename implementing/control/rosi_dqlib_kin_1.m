@@ -6,10 +6,21 @@ close all;
 
 %% preamble
 
-preamble;
+% for using directly Dual Quaternion library namespace
+include_namespace_dq;
+
+% inform where the phd-codes folder is located for finding related code
+folder_phd_codes = '/home/filipe/gitSources/doc/phd-codes';
+
+% adding subfolder to path
+addpath(strcat(folder_phd_codes,'/implementing/lib'));
+%addpath(strcat(folder_phd_codes,'/implementing/lib/ros')); 
+%addpath(strcat(folder_phd_codes,'/implementing/lib/plot'));
+%addpath(strcat(folder_phd_codes,'/implementing/lib/dq'));
+%addpath(strcat(folder_phd_codes,'/studying/dq-robotics/lib'));
 
 % loading modelling variables
-load('model_dq_1.mat');
+load(strcat(folder_phd_codes,'/implementings/modelling/model_dqlib_1.mat'));
 
 %% parameters
 

@@ -1,3 +1,5 @@
+% Sends a command to ROSI simulator given a u speed control and publishing
+% handlers
 function ros_send_robot_cmd_vel(u, pub_traction_speed, pub_manipulator_speed)
 
     % treating header

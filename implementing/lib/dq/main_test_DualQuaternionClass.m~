@@ -1,0 +1,18 @@
+% Main for testing the DualQuaternion class
+clear all;
+clc;
+close all;
+
+% first transform
+q1_p = quaternion(0.4359, 0.3106, -0.7182, 0.4444);
+q1_v = [10, 30, 90];
+dq1 = DualQuaternion();
+dq1 = dq1.setDQFromQuatAndTransl(q1_p, q1_v);
+
+% second transform
+q2_p = quaternion(-0.3688, 0.4444, -0.7549, 0.3106);
+q2_v = [30, 40, 190];
+dq2 = DualQuaternion();
+dq2 = dq2.setDQFromQuatAndTransl(q2_p, q2_v);
+
+% third transform 

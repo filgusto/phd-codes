@@ -47,7 +47,7 @@ robot = DQ_WholeBody(base);
 robot.add(arm);
 
 %% Saving variables to file
-save('model_dq_1');
+save('model_dqlib_1');
 
 
 
