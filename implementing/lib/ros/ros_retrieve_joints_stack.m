@@ -1,4 +1,4 @@
-function q = ros_retrieve_joints(sub_base, sub_mani)
+function q = ros_retrieve_joints_stack(sub_base, sub_mani)
 
     % collects ros_messages
     topic_data_pose = receive(sub_base, 3);

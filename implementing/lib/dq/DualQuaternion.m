@@ -46,7 +46,7 @@ classdef DualQuaternion
         
         
         % Sets a pure rotation dual quaternion given an axis and an angle
-        function obj = setDQpureRotation(obj, r_axis, r_angle)
+        function obj = setDQpureRotation(obj, r_angle, r_axis)
             
             % aux variable
             sin_angle_div_2 = sin(r_angle/2);
@@ -100,7 +100,7 @@ classdef DualQuaternion
         end % end of multiply operator
         
         
-        % Multiply operator for DualQuaternion objects
+        % Sum operator for DualQuaternion objects
         function r = plus(lhs, rhs)
             
             % summing parts 
@@ -127,6 +127,20 @@ classdef DualQuaternion
            % mounting resulting object
            r = DualQuaternion();
            r = r.setDQFromQuat(r_p, r_d);
+        end
+        
+        
+        
+        % Conjugate operator
+        function r = ctranspose(dq_in)
+            
+            % conjugating both quaternion parts
+            r_p = dq_in.q_p.conj;
+            r_d = dq_in.q_d.conj;
+            
+            % mounting returning object
+            r = DualQuaternion();
+            r = r.setDQFromQuat(r_p, r_d);
         end
         
        %% === CONVERSIONS AND EXTRACTIONS

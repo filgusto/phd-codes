@@ -22,7 +22,6 @@ namespace hello_world
             m_dual = d;
         }
 
-        // PAREI AQUI PAREI AQUI
         public DualQuaternion_c(Quaternion r, Vector3 t)
         {
             m_real = Quaternion.Normalize(r);

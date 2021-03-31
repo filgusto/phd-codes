@@ -9,12 +9,14 @@ folder_phd_codes = '/home/filipe/gitSources/doc/phd-codes';
 
 addpath(strcat(folder_phd_codes,'/implementing/lib/dq'));
 
-%% defining frames
+%% DEFINING FRAMES
 
-% -- world frame
+%% World frame
 dq_world = DualQuaternion();
 
 
+
+%% ROSI frames
 
 % -- rosi base w.r.t. world frame
 ori_mundo_base = quaternion(-2.9802304624127e-08, 0, 0, 1);
@@ -33,6 +35,8 @@ dq_base_gen3base = DualQuaternion();
 dq_base_gen3base = dq_base_gen3base.setDQFromQuatAndTransl(ori_base_gen3base, pos_base_gen3base)
 
 
+
+%% Manipulator frames
 
 % -- manipulator joint 1 w.r.t. manipulator base
 ori_gen3base_j1 = quaternion(0.006186225451529, 0.0036798391956836, -0.99997401237488, -0.00048272835556418);
@@ -96,6 +100,12 @@ dq_j6_j7 = DualQuaternion();
 dq_j6_j7 = dq_j6_j7.setDQFromQuatAndTransl(ori_j6_j7, pos_j6_j7)
 
 
+% mounting manipulator dual quaternion array
+dq_mani_arr = {dq_gen3base_j1, dq_j1_j2, dq_j2_j3, dq_j3_j4, dq_j4_j5, dq_j5_j6, dq_j6_j7};
+
+
+
+%% TCP frame
 
 % -- manipulator tcp w.r.t. joint 7
 ori_j7_tcp = quaternion(0.50000357627869, -0.49999812245369, 0.50000184774399, 0.49999645352364);
@@ -108,14 +118,7 @@ dq_j7_tcp = dq_j7_tcp.setDQFromQuatAndTransl(ori_j7_tcp, pos_j7_tcp)
 
 %% Saving variables
 
-save('model_dq', 'dq_world', 'dq_world_base', 'dq_base_gen3base','dq_gen3base_j1',...
-                  'dq_j1_j2',...
-                  'dq_j2_j3',...
-                  'dq_j3_j4',...
-                  'dq_j4_j5',...
-                  'dq_j5_j6',...
-                  'dq_j6_j7',...
-                  'dq_j7_tcp');
+save('model_dq', 'dq_world', 'dq_world_base', 'dq_base_gen3base','dq_mani_arr', 'dq_j7_tcp');
 
 clear;
 load('model_dq.mat');

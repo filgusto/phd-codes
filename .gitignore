@@ -45,3 +45,4 @@ obj/
 
 # Matlab generated
 *.mat
+*.m~
