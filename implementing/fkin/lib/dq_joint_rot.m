@@ -7,7 +7,7 @@ function r = dq_joint_rot(angle, axis)
 
    % creates and return a pure rotation dual quaternion
    r = DualQuaternion();
-   r = r.setDQpureRotation(angle, axis)
+   r = r.setDQpureRotation(angle, axis);
 
 end
 

@@ -113,6 +113,19 @@ classdef DualQuaternion
             
         end % end of add operator
         
+        % Minus operator for DualQuaternion objects
+        function r = minus(lhs, rhs)
+           
+            % subtracting quaternion parts
+            r_p = lhs.q_p - rhs.q_d;
+            r_d = lhs.q_d - rhs.q_d;
+            
+            % mounting resulting object
+            r = DualQuaternion();
+            r = r.setDQFromQuat(r_p, r_d);   
+            
+        end
+        
         
         % Normalize Dual Quaternion
         function r = normalize(dq_in)
@@ -130,18 +143,30 @@ classdef DualQuaternion
         end
         
         
+
         
         % Conjugate operator
-        function r = ctranspose(dq_in)
+        function r = conj(obj)
             
             % conjugating both quaternion parts
-            r_p = dq_in.q_p.conj;
-            r_d = dq_in.q_d.conj;
+            r_p = obj.q_p.conj;
+            r_d = obj.q_d.conj;
             
             % mounting returning object
             r = DualQuaternion();
             r = r.setDQFromQuat(r_p, r_d);
+            
         end
+        
+        
+        % returns the dual quaternion complex modulus (magnitude)
+        function mag = mag(obj)
+           
+            % computes the magnitude of the dual quaternion
+            mag = obj * obj.conj;
+            
+        end
+                  
         
        %% === CONVERSIONS AND EXTRACTIONS
        
@@ -167,6 +192,7 @@ classdef DualQuaternion
            % mounting the th matrix
            th = [[rotm,tr.'];[0, 0, 0, 1]];
        end
+              
        
       %% === INTERFACES
      
