@@ -8,6 +8,10 @@ function r_tpc = rosi_ros_topic_info()
 r_tpc.pose_rosi.adr = '/rosi/cheat/pose_rosi';
 r_tpc.pose_rosi.msg = 'bj_libraries/DualQuaternionStamped';
 
+% ROSI - Sub - Pose Vel - Cheat
+r_tpc.pose_vel_rosi.adr = '/rosi/cheat/pose_vel_rosi';
+r_tpc.pose_vel_rosi.msg = 'bj_libraries/DualQuaternionStamped';
+
 % ROSI arms - Sub - Angular position
 r_tpc.pos_arms.adr = '/rosi/sensor/pos_arms';
 r_tpc.pos_arms.msg = 'sim_rosi/RosiMovementArray';

@@ -1,4 +1,4 @@
-function h = ros_retrieve_pose(sub_pose)
+function h = ros_retrieve_dq(sub_pose)
 
     % receives ros msg
     data = receive(sub_pose, 3);

@@ -17,7 +17,10 @@ load('model_dq.mat');
 %% parameters
 
 % test time length
-test_length = 30;       % seconds
+test_length = 60;       % seconds
+
+% manipulator dof
+arm_dof = 7;
 
 
 %% ROS 
@@ -32,7 +35,6 @@ r_tpc = rosi_ros_topic_info();
 sub_pos_manipulator_joints = rossubscriber(r_tpc.pos_joints.adr, r_tpc.pos_joints.msg);
 sub_pose_rosi = rossubscriber(r_tpc.pose_rosi.adr, r_tpc.pose_rosi.msg);
 sub_pose_tcp = rossubscriber(r_tpc.pose_tcp.adr, r_tpc.pose_tcp.msg);
-
 
 %% Fkin Loop
 
@@ -55,18 +57,22 @@ while ~ flag_end
     %% Retrieving ROS data
     
     % robot joints vector from ROS
-    q = ros_retrieve_pos_mani_joints(sub_pos_manipulator_joints);
+    q = ros_retrieve_pos_mani_joints(sub_pos_manipulator_joints)
     
     % rosi base pose
-    h_world_base = ros_retrieve_pose(sub_pose_rosi);
+    h_world_base = ros_retrieve_dq(sub_pose_rosi);
     
     % tcp pose
-    h_world_tcp = ros_retrieve_pose(sub_pose_tcp);
+    h_world_tcp = ros_retrieve_dq(sub_pose_tcp);
     
     %% Updating manipulator joints transforms given joints angles
     
-    for i = 1:length(dq_mani_arr)
-        dq_mani_arr_up{i} = dq_joint_rot(q(i)) * dq_mani_arr{i};
+    for i = 1:length(dq_arm_arr)
+        if i<=arm_dof
+            dq_arm_arr_up{i} = dq_arm_arr{i} * dq_joint_rot(q(i));
+        else
+            dq_arm_arr_up{i} = dq_arm_arr{i}; % the last link is the end effector
+        end
     end
     
     
@@ -74,21 +80,17 @@ while ~ flag_end
     
     % computing until the manipulator base
     dq_res = DualQuaternion();
-    dq_res = dq_base_gen3base * h_world_base * dq_res;
+    dq_res = dq_res * h_world_base * dq_base_arm;
     
-    % computing for manipulator the manipulator joints
-    for i=1:7 
-        dq_res = dq_mani_arr_up{i} * dq_res;
-    end
+    % computing fkin until the EE
+    for i=1:length(dq_arm_arr)
+        dq_res = dq_res * dq_arm_arr_up{i};
+    end 
     
-    % computing fkin until the TCP
-    dq_res = dq_j7_tcp * dq_res;
-    
-    
-    %% Comparison with actual tcp pose
+    %% Comparison with actual EE pose
 
     % computing the error vector
-    e = dq_res * h_world_tcp.conj;
+    e = h_world_tcp.conj * dq_res;
 
     % obtaining error metrics
     e_theta(l_i) = q_extract_angle_n_director(e.q_p);
@@ -106,6 +108,8 @@ while ~ flag_end
     
     % updating iterator
     l_i = l_i+1;
+    
+    plot([DualQuaternion dq_res h_world_tcp])
 
 end
 

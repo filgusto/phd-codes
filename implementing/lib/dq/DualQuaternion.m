@@ -23,8 +23,7 @@ classdef DualQuaternion
         function obj = setDQFromQuatAndTransl(obj, q_p, vec)
            obj.q_p = q_p.normalize;
            obj.q_d = (quaternion(0, vec(1), vec(2), vec(3)) * obj.q_p) * 0.5;  
-        end
-        
+        end      
         
         % Method for setting dq components based on two quaternions
         function obj = setDQFromQuat(obj, q_p, q_d)
@@ -35,13 +34,10 @@ classdef DualQuaternion
         
         % Sets a pure translation dual quaternion
         function obj = setDQpureTranslation(obj, tr_vec)
-           
-            % divises the translation vector by two
-            aux_v = tr_vec * 0.5;
-            
+                      
             % mounts the dual quaternion
             obj.q_p = quaternion(1, 0, 0, 0);
-            obj.q_d = quaternion(0, aux_v(1), aux_v(2), aux_v(3)); 
+            obj.q_d = 0.5 * quaternion(0, tr_vec(1), tr_vec(2), tr_vec(3)); 
         end
         
         
@@ -60,6 +56,12 @@ classdef DualQuaternion
             
         end
         
+        % Sets a dual quaternion considering a vector
+        function obj = setDQfromVector(obj, v)
+            obj.q_p = quaternion(v(1), v(2), v(3), v(4));
+            obj.q_d = quaternion(v(5), v(6), v(7), v(8));
+        end
+        
         %% === OPERATORS
         
         % Multiply operator for DualQuaternion objects
@@ -68,8 +70,8 @@ classdef DualQuaternion
             % in case of dual quaternion objects multiplications
             if isa(lhs, 'DualQuaternion') && isa(rhs, 'DualQuaternion')
                 % multiplicating primary and dual quaternion parts
-                r_p = rhs.q_p * lhs.q_p;
-                r_d = (rhs.q_d * lhs.q_p) + (rhs.q_p * lhs.q_d);
+                r_p = lhs.q_p * rhs.q_p;
+                r_d = (lhs.q_d * rhs.q_p) + (lhs.q_p * rhs.q_d);
                 
                 % mounting resulting object
                 r = DualQuaternion();
@@ -143,8 +145,6 @@ classdef DualQuaternion
         end
         
         
-
-        
         % Conjugate operator
         function r = conj(obj)
             
@@ -166,8 +166,37 @@ classdef DualQuaternion
             mag = obj * obj.conj;
             
         end
-                  
         
+        
+        % Method for plotting multiple transforms
+        function plot(dq_arr, size)
+            
+            % extracting translations and rotations
+            o = [];
+            t = [];
+            for i=1:length(dq_arr)
+                
+               % orientation
+               aux_o = dq_arr(i).q_p;
+               o(i,:) = aux_o.compact;
+               t(i,:) = dq_arr(i).extractTranslation;
+            end
+            
+            % plotting transforms
+            if nargin == 1  % if only frames are provided
+                 plotTransforms(t, o);
+            elseif nargin == 2    % if the frame plot size is provided
+                plotTransforms(t, o, 'FrameSize', size);
+            end
+           
+            % arrangements
+            grid on;
+            xlabel('x'); ylabel('y'); zlabel('z');
+            axis equal
+            
+        end
+        
+
        %% === CONVERSIONS AND EXTRACTIONS
        
        % Extracts the translation vector from the dual quaternion
@@ -176,6 +205,7 @@ classdef DualQuaternion
            aux = q_tr.compact;
            tr = aux(2:end);
        end
+       
        
        % Converts the pose dual-quaternion to homogeneous transform matrix
        function th = dq2th(obj)
