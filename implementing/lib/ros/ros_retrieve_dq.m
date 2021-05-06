@@ -8,7 +8,6 @@ function h = ros_retrieve_dq(sub_pose)
     q_d = quaternion(data.Wd, data.Xd, data.Yd, data.Zd);
     
     % mounting and returning the pose dual quaternion
-    h = DualQuaternion();
-    h = h.setDQFromQuat(q_p, q_d);
+    h = DualQuaternion(q_p, q_d);
 end
 

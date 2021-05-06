@@ -28,6 +28,7 @@ r_tpc = rosi_ros_topic_info();
 % subscribing
 sub_pose_vel_rosi = rossubscriber(r_tpc.pose_vel_rosi.adr, r_tpc.pose_vel_rosi.msg);
 sub_pose_rosi = rossubscriber(r_tpc.pose_rosi.adr, r_tpc.pose_rosi.msg);
+sub_vel_manipulator_joints = rossubscriber(r_tpc.vel_joints.adr, r_tpc.vel_joints.msg);
 
 
 %% Loop
@@ -35,11 +36,26 @@ sub_pose_rosi = rossubscriber(r_tpc.pose_rosi.adr, r_tpc.pose_rosi.msg);
 disp('Loop initiated...');
 while true
     
+    % retrieve joints velocity
+    qd = ros_retrieve_mani_joints(sub_vel_manipulator_joints);
+    
     % retrieve rosi base pose
     dq_world_base = ros_retrieve_dq(sub_pose_rosi);
     
     % retrieve base velocity
-    omega_world_base = ros_retrieve_dq(sub_pose_vel_rosi)
+    omega_world_base = ros_retrieve_dq(sub_pose_vel_rosi);
+    
+    % updating joints screw twists
+    joint_screw = {};
+    for i=1:length(dq_arm_arr)
+        joint_screw{i} = get_joint_screw('r', 'z') * qd(i);
+    end
+    
+    dqd_res = DualQuaternion();
+    
+    
+    
+    
     
     % computing dqd
     dqd_world_base = 0.5 * omega_world_base * dq_world_base;    

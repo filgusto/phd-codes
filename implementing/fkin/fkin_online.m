@@ -57,7 +57,7 @@ while ~ flag_end
     %% Retrieving ROS data
     
     % robot joints vector from ROS
-    q = ros_retrieve_pos_mani_joints(sub_pos_manipulator_joints)
+    q = ros_retrieve_mani_joints(sub_pos_manipulator_joints)
     
     % rosi base pose
     h_world_base = ros_retrieve_dq(sub_pose_rosi);

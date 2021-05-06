@@ -55,6 +55,10 @@ r_tpc.vel_target_joints.msg = 'sim_rosi/ManipulatorJoints';
 r_tpc.pos_joints.adr = '/manipulator/sensor/pos_joints';
 r_tpc.pos_joints.msg = 'sim_rosi/ManipulatorJoints';
 
+% Manipulator Joints - Sub - Angular velocity - 
+r_tpc.vel_joints.adr = '/manipulator/sensor/vel_joints';
+r_tpc.vel_joints.msg = 'sim_rosi/ManipulatorJoints';
+
 % Manipulator Wrist - Sub - Force and torque
 r_tpc.ft_wrist.adr = '/manipulator/sensor/ft_wrist';
 r_tpc.ft_wrist.msg = 'geometry_msgs/TwistStamped';
