@@ -17,7 +17,7 @@ load('model_dq.mat');
 %% parameters
 
 % test time length
-test_length = 60;       % seconds
+test_length = 20;       % seconds
 
 % manipulator dof
 arm_dof = 7;
@@ -68,11 +68,7 @@ while ~ flag_end
     %% Updating manipulator joints transforms given joints angles
     
     for i = 1:length(dq_arm_arr)
-        if i<=arm_dof
-            dq_arm_arr_up{i} = dq_arm_arr{i} * dq_joint_rot(q(i));
-        else
-            dq_arm_arr_up{i} = dq_arm_arr{i}; % the last link is the end effector
-        end
+        dq_arm_arr_up{i} = dq_arm_arr{i} * dq_joint_rot(q(i));
     end
     
     
@@ -86,6 +82,9 @@ while ~ flag_end
     for i=1:length(dq_arm_arr)
         dq_res = dq_res * dq_arm_arr_up{i};
     end 
+    
+    % from last manipulator joint to the TCP
+    dq_res = dq_res * dq_jwrist_tcp;
     
     %% Comparison with actual EE pose
 

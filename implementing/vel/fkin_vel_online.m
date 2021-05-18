@@ -8,6 +8,7 @@ close all;
 folder_phd_codes = '/home/filipe/gitSources/doc/phd-codes';
 
 addpath(strcat(folder_phd_codes,'/implementing/modelling'));
+addpath(strcat(folder_phd_codes,'/implementing/modelling/lib'));
 addpath(strcat(folder_phd_codes,'/implementing/lib/dq'));
 addpath('./lib');
 
@@ -45,13 +46,45 @@ while true
     % retrieve base velocity
     omega_world_base = ros_retrieve_dq(sub_pose_vel_rosi);
     
-    % updating joints screw twists
+    % updating joints screw twists with joint velocities
     joint_screw = {};
     for i=1:length(dq_arm_arr)
         joint_screw{i} = get_joint_screw('r', 'z') * qd(i);
     end
     
+    % computing adjoints
+    res = {};
+    aux_dq_res = DualQuaternion();
+    for i=length(dq_arm_arr):-1:1
+        
+        % integrating the transform dq from the end effector to the base
+        if i ~= length(dq_arm_arr)
+            aux_dq_res = aux_dq_res * dq_arm_arr{dq_arm_arr{i+1}};
+        else
+            aux_dq_res = aux_dq_res * dq_jwrist_tcp;
+        end
+               
+        % computing adjoints
+        res{i} = DualQuaternion.adj(aux_dq_res.conj, joint_screw{i});
+    end
+    
+    % instantiating dqd response
     dqd_res = DualQuaternion();
+    
+    for i=1:length(dq_arm_arr)
+        
+        
+    end
+    
+    dqd_res = DualQuaternion.adj(dq_)
+    
+     % mounting jacobian array
+    J_b = {};
+    
+    J_b{1} = DualQuaternion.adj()
+    
+    
+    
     
     
     

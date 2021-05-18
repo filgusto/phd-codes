@@ -272,13 +272,39 @@ classdef DualQuaternion
      
       % overrides disp function
       function disp(obj)
+          
+          % compacting quaternion formats
           q_p = obj.q_p.compact;
           q_d = obj.q_d.compact;
           
-          fprintf('(%d + %di + %dj + %dk) + (%d + %di + %dj + %dk)ε \n\n', ...
-                    q_p(1), q_p(2), q_p(3), q_p(4), q_d(1), q_d(2), q_d(3), q_d(4));
+          % rounding responses
+          q_p = round(q_p, 4);
+          q_d = round(q_d, 4);
+          
+          sig = {};
+          
+          for i=1:4
+              if q_p(i) >= 0
+                  sig{i} = '+';
+              else
+                  sig{i} = '';
+              end
+          end
+          
+          for i=5:8
+              if q_d(i-4) >= 0
+                  sig{i} = '+';
+              else
+                  sig{i} = '';
+              end
+          end
+          
+          
+          fprintf('(%c%d %c%di %c%dj %c%dk) + (%c%d %c%di %c%dj %c%dk)ε \n\n', ...
+              sig{1}, q_p(1), sig{2}, q_p(2), sig{3}, q_p(3), sig{4}, q_p(4), ...
+              sig{5}, q_d(1), sig{6}, q_d(2), sig{7}, q_d(3), sig{8}, q_d(4));
       end
-       
+      
     end
 end
 

@@ -26,9 +26,7 @@ function dq_screw = get_joint_screw(type, axis)
     end
     
     % mounting and returning the dual quaternion
-    q_p = quaternion(p);
-    q_d = quaternion(d);
-    dq_screw = DualQuaternion(q_p, q_d);
+    dq_screw = DualQuaternion(quaternion(p), quaternion(d));
         
 end
 
