@@ -50,6 +50,9 @@ r_tpc.vel_target_joints.adr = '/manipulator/cmd/vel_target_joints';
 r_tpc.vel_target_joints.msg = 'sim_rosi/ManipulatorJoints';
 
 
+% Manipulator TCP pose
+r_tpc.pose_vel_tcp.adr = '/manipulator/cheat/pose_vel_tcp';
+r_tpc.pose_vel_tcp.msg = 'bj_libraries/DualQuaternionStamped';
 
 % Manipulator Joints - Sub - Angular position - 
 r_tpc.pos_joints.adr = '/manipulator/sensor/pos_joints';
@@ -68,7 +71,7 @@ r_tpc.torque_joints.adr = '/manipulator/sensor/torque_joints';
 r_tpc.torque_joints.msg = 'sim_rosi/ManipulatorJoints';
 
 % Manipulator tcp - Sub - Pose - CHEAT
-r_tpc.pose_tcp.adr = '/rosi/cheat/pose_tcp';
+r_tpc.pose_tcp.adr = '/manipulator/cheat/pose_tcp';
 r_tpc.pose_tcp.msg = 'bj_libraries/DualQuaternionStamped';
 
 % Manipulator base - Sub - Pose w.r.t. rosi base - CHEAT

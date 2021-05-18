@@ -91,10 +91,10 @@ dq_j5_j6 = DualQuaternion.transform(qo_j5_j6, t_j5_j6, 'trfirst');
 
 
 % -- manipulator tcp w.r.t. joint 7
-qo_jwrist_tcp = quaternion([1.1920926112907e-07, -1, 5.4538236327062e-06, -1.6987319213513e-06]);
-t_jwrist_tcp = [0.041204608976841, 0.060173213481903, -0.25342667102814];
+qo_j6_tcp = quaternion([1.1920926112907e-07, -1, 5.4538236327062e-06, -1.6987319213513e-06]);
+t_j6_tcp = [0.041204608976841, 0.060173213481903, -0.25342667102814];
 
-dq_jwrist_tcp = DualQuaternion.transform(qo_jwrist_tcp, t_jwrist_tcp, 'trfirst');
+dq_j6_tcp = DualQuaternion.transform(qo_j6_tcp, t_j6_tcp, 'trfirst');
 
 
 %% Mounting manipulator dual quaternion array
@@ -107,7 +107,7 @@ dq_arm_arr = {dq_gen3base_j0, dq_j0_j1, dq_j1_j2, dq_j2_j3, dq_j3_j4, dq_j4_j5, 
 
 %% Saving variables
 
-save('model_dq', 'dq_world', 'dq_world_base', 'dq_base_arm','dq_arm_arr', 'dq_jwrist_tcp');
+save('model_dq', 'dq_world', 'dq_world_base', 'dq_base_arm','dq_arm_arr', 'dq_j6_tcp');
 
 clear;
 load('model_dq.mat');

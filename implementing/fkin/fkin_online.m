@@ -57,39 +57,22 @@ while ~ flag_end
     %% Retrieving ROS data
     
     % robot joints vector from ROS
-    q = ros_retrieve_mani_joints(sub_pos_manipulator_joints)
+    q = ros_retrieve_mani_joints(sub_pos_manipulator_joints);
     
     % rosi base pose
-    h_world_base = ros_retrieve_dq(sub_pose_rosi);
+    dq_world_base = ros_retrieve_dq(sub_pose_rosi);
     
     % tcp pose
-    h_world_tcp = ros_retrieve_dq(sub_pose_tcp);
-    
-    %% Updating manipulator joints transforms given joints angles
-    
-    for i = 1:length(dq_arm_arr)
-        dq_arm_arr_up{i} = dq_arm_arr{i} * dq_joint_rot(q(i));
-    end
-    
+    dq_world_tcp = ros_retrieve_dq(sub_pose_tcp);
+     
     
     %% Performing fkin
-    
-    % computing until the manipulator base
-    dq_res = DualQuaternion();
-    dq_res = dq_res * h_world_base * dq_base_arm;
-    
-    % computing fkin until the EE
-    for i=1:length(dq_arm_arr)
-        dq_res = dq_res * dq_arm_arr_up{i};
-    end 
-    
-    % from last manipulator joint to the TCP
-    dq_res = dq_res * dq_jwrist_tcp;
+    dq_res = dq_rosi_fkin(q, dq_world_base,dq_base_arm, dq_arm_arr, dq_j6_tcp);
     
     %% Comparison with actual EE pose
 
     % computing the error vector
-    e = h_world_tcp.conj * dq_res;
+    e = dq_world_tcp.conj * dq_res;
 
     % obtaining error metrics
     e_theta(l_i) = q_extract_angle_n_director(e.q_p);
@@ -108,7 +91,7 @@ while ~ flag_end
     % updating iterator
     l_i = l_i+1;
     
-    plot([DualQuaternion dq_res h_world_tcp])
+    plot([DualQuaternion dq_res dq_world_tcp])
 
 end
 

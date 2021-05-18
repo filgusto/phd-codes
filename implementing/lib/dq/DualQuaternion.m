@@ -278,13 +278,15 @@ classdef DualQuaternion
           q_d = obj.q_d.compact;
           
           % rounding responses
-          q_p = round(q_p, 4);
-          q_d = round(q_d, 4);
+          q_p = round(q_p, 6);
+          q_d = round(q_d, 6);
           
           sig = {};
           
           for i=1:4
-              if q_p(i) >= 0
+              if i==1 && q_p(i) == 0
+                  sig{i} = '';
+              elseif q_p(i) > 0
                   sig{i} = '+';
               else
                   sig{i} = '';
@@ -292,15 +294,17 @@ classdef DualQuaternion
           end
           
           for i=5:8
-              if q_d(i-4) >= 0
+              if i==5 && q_d(i-4) == 0
+                  sig{i} = '';
+              elseif q_d(i-4) > 0
                   sig{i} = '+';
               else
                   sig{i} = '';
               end
           end
           
-          
-          fprintf('(%c%d %c%di %c%dj %c%dk) + (%c%d %c%di %c%dj %c%dk)ε \n\n', ...
+          % printing
+          fprintf('(%c%.6f %c%.6f<strong>i</strong> %c%.6f<strong>j</strong> %c%.6f<strong>k</strong>) + (%c%.6f %c%.6f<strong>i</strong> %c%.6f<strong>j</strong> %c%.6f<strong>k</strong>)<strong>ε</strong> \n\n', ...
               sig{1}, q_p(1), sig{2}, q_p(2), sig{3}, q_p(3), sig{4}, q_p(4), ...
               sig{5}, q_d(1), sig{6}, q_d(2), sig{7}, q_d(3), sig{8}, q_d(4));
       end
