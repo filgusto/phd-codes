@@ -10,6 +10,7 @@ folder_phd_codes = '/home/filipe/gitSources/doc/phd-codes';
 addpath(strcat(folder_phd_codes,'/implementing/modelling'));
 addpath(strcat(folder_phd_codes,'/implementing/modelling/lib'));
 addpath(strcat(folder_phd_codes,'/implementing/lib/dq'));
+addpath(strcat(folder_phd_codes,'/implementing/fkin/lib'));
 addpath('./lib');
 
 %% preamble
@@ -30,13 +31,14 @@ r_tpc = rosi_ros_topic_info();
 sub_pose_vel_rosi = rossubscriber(r_tpc.pose_vel_rosi.adr, r_tpc.pose_vel_rosi.msg);
 sub_pose_vel_tcp = rossubscriber(r_tpc.pose_vel_tcp.adr, r_tpc.pose_vel_tcp.msg);
 sub_pose_rosi = rossubscriber(r_tpc.pose_rosi.adr, r_tpc.pose_rosi.msg);
+sub_pose_tcp = rossubscriber(r_tpc.pose_tcp.adr, r_tpc.pose_tcp.msg);
 sub_pos_manipulator_joints = rossubscriber(r_tpc.pos_joints.adr, r_tpc.pos_joints.msg);
 sub_vel_manipulator_joints = rossubscriber(r_tpc.vel_joints.adr, r_tpc.vel_joints.msg);
 
 %% initializing variables
 
 % the manipulator is still w.r.t. robot
-omega_base_manipulator = DualQuaternion(zeros(8));
+omega_base_manipulator_manipulator = DualQuaternion(zeros(8));
 
 aux_omega = DualQuaternion();
 
@@ -56,8 +58,11 @@ while true
     % retrieve rosi base pose
     dq_world_base = ros_retrieve_dq(sub_pose_rosi);
     
+    % tcp pose
+    %dq_world_tcp = ros_retrieve_dq(sub_pose_tcp);
+    
     % retrieve base velocity
-    omega_world_base = ros_retrieve_dq(sub_pose_vel_rosi);
+    omega_world_base_world = ros_retrieve_dq(sub_pose_vel_rosi);
     
     % retrieve tcp velocity
     omega_world_tcp_world = ros_retrieve_dq(sub_pose_vel_tcp);
@@ -79,7 +84,7 @@ while true
     end
     
     % variable for the fkin
-    res_dq_fkin = DualQuaternion();
+    res_dq_world_tcp = DualQuaternion();
    
     % variable for the fkin vel
     res_omega_world_tcp_tcp = DualQuaternion(zeros(8));
@@ -88,58 +93,59 @@ while true
         
         % computing the fkin step-by-step from the last joint
         if i ~= length(dq_arm_arr)
-            res_dq_fkin = dq_arm_arr_up{i+1} * res_dq_fkin;
+            res_dq_world_tcp = dq_arm_arr_up{i+1} * res_dq_world_tcp;
         else
-            res_dq_fkin = dq_j6_tcp * res_dq_fkin;
+            res_dq_world_tcp = dq_j6_tcp * res_dq_world_tcp;
         end
         
         % computing adjoint and summing up to accumulated result
-        res_omega_world_tcp_tcp = res_omega_world_tcp_tcp + DualQuaternion.adj(res_dq_fkin.conj, omega_joint_screw{i});
+        res_omega_world_tcp_tcp = res_omega_world_tcp_tcp + DualQuaternion.adj(res_dq_world_tcp.conj, omega_joint_screw{i});
         
     end
     
     % summing for the joint manipulator w.r.t. robot base
-    res_dq_fkin = dq_arm_arr_up{1} * res_dq_fkin;
-    res_omega_world_tcp_tcp = res_omega_world_tcp_tcp + DualQuaternion.adj(res_dq_fkin.conj, omega_base_manipulator);
+    res_dq_world_tcp = dq_arm_arr_up{1} * res_dq_world_tcp;
+    res_omega_world_tcp_tcp = res_omega_world_tcp_tcp + DualQuaternion.adj(res_dq_world_tcp.conj, omega_base_manipulator_manipulator);
     
     % summing for the robot base w.r.t. inertial reference
-    res_dq_fkin = dq_base_arm * res_dq_fkin;
-    res_omega_world_tcp_tcp = res_omega_world_tcp_tcp + DualQuaternion.adj(res_dq_fkin.conj, omega_world_base)
+    omega_world_base_base = DualQuaternion.adj(dq_world_base.conj, omega_world_base_world);
+    res_dq_world_tcp = dq_base_arm * res_dq_world_tcp;
+    res_omega_world_tcp_tcp = res_omega_world_tcp_tcp + DualQuaternion.adj(res_dq_world_tcp.conj, omega_world_base_base)
     
     % finishing computing the fkin
-    res_dq_fkin = dq_world_base * res_dq_fkin;
+    res_dq_world_tcp = dq_world_base * res_dq_world_tcp;
     
     %% computing rosi fkin
   
     % computing omega tcp w.r.t. world expressed in tcp
-    omega_world_tcp_tcp = DualQuaternion.adj(res_dq_fkin.conj, omega_world_tcp_world)
+    omega_world_tcp_tcp = DualQuaternion.adj(res_dq_world_tcp.conj, omega_world_tcp_world)
     
-    % PAREI AQUI PAREI AQUI
-    res_omega_world_tcp_tcp - aux_omega
+    res_omega_world_tcp_tcp - omega_world_tcp_tcp
+       
+    %aux_res = res_omega_world_tcp_tcp.q_d.compact;
+    %aux_gt = omega_world_tcp_tcp.q_d.compact;
+
+    % computing the dual pose derivative from the simulator gt
+    %dqd_world_tcp = 0.5 *  omega_world_tcp_world * res_dq_world_tcp
     
-    aux_omega = omega_world_tcp_tcp;
+    % comparing the dual pose derivative from the simulator gt and computed
+    % omega
+    %dqd_world_tcp_gt = 0.5 * res_dq_world_tcp * omega_world_tcp_tcp
+    %dqd_world_tcp_res = 0.5 * res_dq_world_tcp*  res_omega_world_tcp_tcp
+    
+    %dqd_world_tcp_gt - dqd_world_tcp_res
+    
+    %aux2_owtt - aux2_owtw
+    
+    %res_omega_world_tcp_tcp - aux_omega
+    
+    %aux_omega = omega_world_tcp_tcp;
     
     %res_omega_world_tcp_tcp;
     
     % computing dqd
     %dqd_world_base = 0.5 * omega_world_base * dq_world_base;    
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

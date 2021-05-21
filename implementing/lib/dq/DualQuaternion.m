@@ -119,7 +119,7 @@ classdef DualQuaternion
                     
                 % receiving a 8 position vector as input
                 case 1
-                    if isnumeric(varargin{1}) & length(varargin{1}) == 8
+                    if isnumeric(varargin{1}) && length(varargin{1}) == 8
                         obj.q_p = quaternion(varargin{1}(1:4));
                         obj.q_d = quaternion(varargin{1}(5:8));
                     else
@@ -128,7 +128,7 @@ classdef DualQuaternion
                     
                 % receiving quaternions as input
                 case 2
-                    if isa(varargin{1}, 'quaternion') & isa(varargin{1}, 'quaternion')
+                    if isa(varargin{1}, 'quaternion') && isa(varargin{1}, 'quaternion')
                         obj.q_p = varargin{1};
                         obj.q_d = varargin{2};
                     else

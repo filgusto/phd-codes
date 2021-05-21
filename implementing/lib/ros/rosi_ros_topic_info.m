@@ -12,6 +12,10 @@ r_tpc.pose_rosi.msg = 'bj_libraries/DualQuaternionStamped';
 r_tpc.pose_vel_rosi.adr = '/rosi/cheat/pose_vel_rosi';
 r_tpc.pose_vel_rosi.msg = 'bj_libraries/DualQuaternionStamped';
 
+% ROSI - Sub - Mani base pose vel - Cheat
+r_tpc.pose_vel_mani.adr = '/rosi/cheat/pose_vel_mani';
+r_tpc.pose_vel_mani.msg = 'bj_libraries/DualQuaternionStamped';
+
 % ROSI arms - Sub - Angular position
 r_tpc.pos_arms.adr = '/rosi/sensor/pos_arms';
 r_tpc.pos_arms.msg = 'sim_rosi/RosiMovementArray';
@@ -78,33 +82,61 @@ r_tpc.pose_tcp.msg = 'bj_libraries/DualQuaternionStamped';
 r_tpc.pose_mani_base.adr = '/rosi/cheat/pose_mani_base';
 r_tpc.pose_mani_base.msg = 'bj_libraries/DualQuaternionStamped';
 
+% Manipulator joint 0 - Sub - Pose - Cheat
+r_tpc.pose_mani_joint0.adr = '/rosi/cheat/pose_mani_joint1';
+r_tpc.pose_mani_joint0.msg = 'bj_libraries/DualQuaternionStamped';
+
 % Manipulator joint 1 - Sub - Pose - Cheat
-r_tpc.pose_mani_joint1.adr = '/rosi/cheat/pose_mani_joint1';
+r_tpc.pose_mani_joint1.adr = '/rosi/cheat/pose_mani_joint2';
 r_tpc.pose_mani_joint1.msg = 'bj_libraries/DualQuaternionStamped';
 
 % Manipulator joint 2 - Sub - Pose - Cheat
-r_tpc.pose_mani_joint2.adr = '/rosi/cheat/pose_mani_joint2';
+r_tpc.pose_mani_joint2.adr = '/rosi/cheat/pose_mani_joint3';
 r_tpc.pose_mani_joint2.msg = 'bj_libraries/DualQuaternionStamped';
 
 % Manipulator joint 3 - Sub - Pose - Cheat
-r_tpc.pose_mani_joint3.adr = '/rosi/cheat/pose_mani_joint3';
+r_tpc.pose_mani_joint3.adr = '/rosi/cheat/pose_mani_joint4';
 r_tpc.pose_mani_joint3.msg = 'bj_libraries/DualQuaternionStamped';
 
 % Manipulator joint 4 - Sub - Pose - Cheat
-r_tpc.pose_mani_joint4.adr = '/rosi/cheat/pose_mani_joint4';
+r_tpc.pose_mani_joint4.adr = '/rosi/cheat/pose_mani_joint5';
 r_tpc.pose_mani_joint4.msg = 'bj_libraries/DualQuaternionStamped';
 
 % Manipulator joint 5 - Sub - Pose - Cheat
-r_tpc.pose_mani_joint5.adr = '/rosi/cheat/pose_mani_joint5';
+r_tpc.pose_mani_joint5.adr = '/rosi/cheat/pose_mani_joint6';
 r_tpc.pose_mani_joint5.msg = 'bj_libraries/DualQuaternionStamped';
 
 % Manipulator joint 6 - Sub - Pose - Cheat
-r_tpc.pose_mani_joint6.adr = '/rosi/cheat/pose_mani_joint6';
+r_tpc.pose_mani_joint6.adr = '/rosi/cheat/pose_mani_joint7';
 r_tpc.pose_mani_joint6.msg = 'bj_libraries/DualQuaternionStamped';
 
-% Manipulator joint 7 - Sub - Pose - Cheat
-r_tpc.pose_mani_joint7.adr = '/rosi/cheat/pose_mani_joint7';
-r_tpc.pose_mani_joint7.msg = 'bj_libraries/DualQuaternionStamped';
+% Manipulator joint 0 - Sub - Pose Vel - Cheat
+r_tpc.pose_vel_mani_joint0.adr = '/manipulator/cheat/pose_mani_joint_vel0';
+r_tpc.pose_vel_mani_joint0.msg = 'bj_libraries/DualQuaternionStamped';
+
+% Manipulator joint 1 - Sub - Pose Vel - Cheat
+r_tpc.pose_vel_mani_joint1.adr = '/manipulator/cheat/pose_mani_joint_vel1';
+r_tpc.pose_vel_mani_joint1.msg = 'bj_libraries/DualQuaternionStamped';
+
+% Manipulator joint 2 - Sub - Pose Vel - Cheat
+r_tpc.pose_vel_mani_joint2.adr = '/manipulator/cheat/pose_mani_joint_vel2';
+r_tpc.pose_vel_mani_joint2.msg = 'bj_libraries/DualQuaternionStamped';
+
+% Manipulator joint 3 - Sub - Pose Vel - Cheat
+r_tpc.pose_vel_mani_joint3.adr = '/manipulator/cheat/pose_mani_joint_vel3';
+r_tpc.pose_vel_mani_joint3.msg = 'bj_libraries/DualQuaternionStamped';
+
+% Manipulator joint 4 - Sub - Pose Vel - Cheat
+r_tpc.pose_vel_mani_joint4.adr = '/manipulator/cheat/pose_mani_joint_vel4';
+r_tpc.pose_vel_mani_joint4.msg = 'bj_libraries/DualQuaternionStamped';
+
+% Manipulator joint 5 - Sub - Pose Vel - Cheat
+r_tpc.pose_vel_mani_joint5.adr = '/manipulator/cheat/pose_mani_joint_vel5';
+r_tpc.pose_vel_mani_joint5.msg = 'bj_libraries/DualQuaternionStamped';
+
+% Manipulator joint 6 - Sub - Pose Vel - Cheat
+r_tpc.pose_vel_mani_joint6.adr = '/manipulator/cheat/pose_mani_joint_vel6';
+r_tpc.pose_vel_mani_joint6.msg = 'bj_libraries/DualQuaternionStamped';
 
 
 
