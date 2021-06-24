@@ -17,7 +17,7 @@ load('model_dq.mat');
 %% parameters
 
 % test time length
-test_length = 20;       % seconds
+test_length = 60;       % seconds
 
 % manipulator dof
 arm_dof = 7;
@@ -67,10 +67,10 @@ while ~ flag_end
      
     
     %% Performing fkin
-    dq_res = dq_rosi_fkin(q, dq_world_base,dq_base_arm, dq_arm_arr, dq_j6_tcp);
+    dq_res = dq_rosi_fkin(q, dq_world_base, dq_base_arm, dq_arm_arr, dq_j6_tcp);
     
     %% Comparison with actual EE pose
-
+    
     % computing the error vector
     e = dq_world_tcp.conj * dq_res;
 

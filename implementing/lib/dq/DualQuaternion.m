@@ -13,6 +13,7 @@ classdef DualQuaternion
         % adjoint operator
             r = q * h * q.conj;
         end
+
         
          function ret = pureRotation(varargin)
         % Sets a pure rotation dual quaternion
@@ -193,6 +194,7 @@ classdef DualQuaternion
            r = DualQuaternion(r_p, r_d);
         end
         
+        
         function r = conj(obj)
         % Conjugate operator
             
@@ -200,20 +202,17 @@ classdef DualQuaternion
         end
         
         
-        
-        
-        
-        % returns the dual quaternion complex modulus (magnitude)
         function mag = mag(obj)
-           
+        % Returns the dual quaternion complex modulus (magnitude)
+            
             % computes the magnitude of the dual quaternion
             mag = obj * obj.conj;
             
         end
                 
         
-        % Method for plotting multiple transforms
         function plot(dq_arr, size)
+        % Plots multiple transforms
             
             % extracting translations and rotations
             o = [];
@@ -240,20 +239,45 @@ classdef DualQuaternion
             
         end
         
+        
+        function ret = rectify(obj)
+        % Rectifies a dual quaternion
+        % ** This method should be verified for correctness
+            
+            % inverts q_p if q_p.w is negative
+            if obj.getComponent(1) < 0
+                q_p = obj.q_p * -1;
+            else
+                q_p = obj.q_p;
+            end
+            
+            % inverts q_d if q_d.w is negative
+            if obj.getComponent(5) < 0
+                q_d = obj.q_d * -1;
+            else
+                q_d = obj.q_d;
+            end
+            
+            % creating return
+            ret = DualQuaternion(q_p, q_d);
+            
+        end
+        
 
        %% === CONVERSIONS AND EXTRACTIONS
        
-       % Extracts the translation vector from the dual quaternion
        function tr = extractTranslation(obj)
+       % Extracts the translation vector from the dual quaternion
+       
            q_tr = (obj.q_d * 2) * (obj.q_p.conj);
            aux = q_tr.compact;
            tr = aux(2:end);
        end
        
        
-       % Converts the pose dual-quaternion to homogeneous transform matrix
        function th = dq2th(obj)
-          
+       % Converts the pose dual-quaternion to homogeneous transform matrix
+       
            % normalizes the dq
            dq_n = obj.normalize;
            
@@ -266,8 +290,33 @@ classdef DualQuaternion
            % mounting the th matrix
            th = [[rotm,tr.'];[0, 0, 0, 1]];
        end
-              
        
+       
+       function ret = compact(obj)
+       % Returns a compact array containing the dual quaternion elements
+       
+            ret = [obj.q_p.compact, obj.q_d.compact];
+       end
+       
+       
+       function ret = getComponent(obj, varargin)
+       % Returns a specific dual quaternion component based on an index
+           
+            if isnumeric(varargin{1}) % tests if is a numeric input
+                if mod(varargin{1},1) == 0  % tests if is an integer input
+                    
+                    % retrieves a dual quaternion component based on indes
+                    % from 1 to 8
+                    aux = obj.compact;
+                    ret = aux(varargin{1});
+                else
+                    error('dualquaternion:getComponent:invalidInput','The method requires an integer input');
+                end
+            else
+                error('dualquaternion:purerotation:invalidinput','Invalid input. Insert a numeric integer input');
+            end
+       end
+              
       %% === INTERFACES
      
       % overrides disp function
