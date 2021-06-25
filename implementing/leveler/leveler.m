@@ -51,9 +51,11 @@ while true
     dq_world_laj3 = dq_ori_world_base * dq_base_laj3;
     dq_world_laj4 = dq_ori_world_base * dq_base_laj4;
     
+    % computing 
+    
     % plotting 
-    plot([f_world, dq_ori_world_base, ...
-        dq_world_laj1, dq_world_laj2, dq_world_laj3, dq_world_laj4]);
+    plot([f_world, dq_ori_world_base]);
+%         dq_world_laj1, dq_world_laj2, dq_world_laj3, dq_world_laj4]);
     
 end
 
