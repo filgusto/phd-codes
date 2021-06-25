@@ -16,7 +16,7 @@ addpath('./lib');
 
 %% preamble
 
-% loading robot dualquaternion modules
+% loading robot dual quaternion model
 load(strcat(folder_phd_codes,'/implementing/modelling/','model_dq.mat'));
 
 %% ROS
@@ -198,45 +198,43 @@ while true
 %     dqd_world_base_w - dqd_world_base_b
 
 
-    %% Comparing linear velocity from gt and res for TCP frame
+    %% Comparing dual velocity from gt and res for TCP frame
     
-    omega_world_tcp_world_gt
-    omega_world_tcp_tcp_gt = DualQuaternion.adj(dq_world_tcp_gt.conj, omega_world_tcp_world_gt)
-    omega_world_tcp_tcp_res
-    
-    omega_world_tcp_tcp_gt - omega_world_tcp_tcp_res
-    
-    aux_1 = omega_world_tcp_tcp_gt.compact;
-    aux_2 = omega_world_tcp_tcp_res.compact;
-    
-    norm_gt = norm(aux_1(end-2:end))
-    norm_res = norm(aux_2(end-2:end))
+%     omega_world_tcp_world_gt
+%     omega_world_tcp_tcp_gt = DualQuaternion.adj(dq_world_tcp_gt.conj, omega_world_tcp_world_gt)
+%     omega_world_tcp_tcp_res
+%     
+%     omega_world_tcp_tcp_gt - omega_world_tcp_tcp_res
+%     
+%     aux_1 = omega_world_tcp_tcp_gt.compact;
+%     aux_2 = omega_world_tcp_tcp_res.compact;
+%     
+%     norm_gt = norm(aux_1(end-2:end))
+%     norm_res = norm(aux_2(end-2:end))
    
     
 %% Computing dual quaternion kinematics of tcp
 
-%     omega_world_tcp_world_gt   % comes directly from the simulator
-%     omega_world_tcp_tcp_gt = DualQuaternion.adj(dq_world_tcp_gt.conj, omega_world_tcp_world_gt) % computed from gt
-%     omega_world_tcp_tcp_res    % computed by the fkin method
-%     
+    omega_world_tcp_tcp_gt = DualQuaternion.adj(dq_world_tcp_gt.conj, omega_world_tcp_world_gt); % computed from gt
     
-    % computing dqd world tcp world from ground truth
-%     dqd_world_tcp_world_gt = 0.5 * omega_world_tcp_world_gt * dq_world_tcp_gt;
-%     dqd_world_tcp_world_gt = dqd_world_tcp_world_gt.rectify
+    % computing dqd world tcp from omega_world_tcp_world ground truth
+    dqd_world_tcp_w_gt = 0.5 * omega_world_tcp_world_gt * dq_world_tcp_gt;
+    dqd_world_tcp_w_gt = dqd_world_tcp_w_gt.rectify
 
-    % computing dqd world tcp tcp from ground truth
-%     dqd_world_tcp_tcp_gt = 0.5 * dq_world_tcp_gt * omega_world_tcp_tcp_gt;
-%     dqd_world_tcp_tcp_gt = dqd_world_tcp_tcp_gt.rectify
-%     
-%     % dqd world tcp tcp from fkin
-%     dqd_world_tcp_tcp_res = 0.5 * dq_world_tcp_gt * omega_world_tcp_tcp_res;
-%     dqd_world_tcp_tcp_res = dqd_world_tcp_tcp_res.rectify
-%     
+     % computing dqd world tcp from omega_world_tcp_tcp ground truth
+    dqd_world_tcp_t_gt = 0.5 * dq_world_tcp_gt * omega_world_tcp_tcp_gt;
+    dqd_world_tcp_t_gt = dqd_world_tcp_t_gt.rectify
+  
+    % computing dqd world tcp from omega_world_tcp_tcp of differential
+    % kinematics
+    dqd_world_tcp_t_res = 0.5 * dq_world_tcp_gt * omega_world_tcp_tcp_res;
+    dqd_world_tcp_t_res = dqd_world_tcp_t_res.rectify
+     
     % comparing gt
-%     dqd_world_tcp_world_gt - dqd_world_tcp_tcp_gt
+    dqd_world_tcp_w_gt - dqd_world_tcp_t_gt
     
     % comparing computed
-%     dqd_world_tcp_tcp_gt - dqd_world_tcp_tcp_res
+    dqd_world_tcp_w_gt - dqd_world_tcp_t_res
 
     %% Changing dual velocity frame of res tcp
     % Failing

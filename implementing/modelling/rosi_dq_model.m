@@ -32,6 +32,35 @@ t_base_gen3base = [-0.13597910106182, -0.067999750375748, 0.26568099856377];
 dq_base_arm = DualQuaternion.transform(qo_base_gen3base, t_base_gen3base, 'trfirst');
 
 
+% -- lever arm 1 w.r.t. robot base frame
+qo_base_laj1 = quaternion([0.49999359250069, 0.50000643730164, -0.50000643730164, 0.49999359250069]);
+t_base_laj1 = [0.3150207400322, -0.22099968791008, -0.099319130182266];
+
+dq_base_laj1 = DualQuaternion.transform(qo_base_laj1, t_base_laj1, 'trfirst');
+
+
+% -- lever arm 2 w.r.t. robot base frame
+qo_base_laj2 = quaternion([0.49999365210533, 0.50000637769699, 0.50000637769699, -0.49999365210533]);
+t_base_laj2 = [-0.31497922539711, -0.22099968791008, -0.099319130182266];
+
+dq_base_laj2 = DualQuaternion.transform(qo_base_laj2, t_base_laj2, 'trfirst');
+
+
+% -- lever arm 3 w.r.t. robot base frame
+qo_base_laj3 = quaternion([0.50000649690628, -0.49999350309372, -0.49999350309372, -0.50000649690628]);
+t_base_laj3 = [0.3130207657814, 0.22100029885769, -0.099319130182266];
+
+dq_base_laj3 = DualQuaternion.transform(qo_base_laj3, t_base_laj3, 'trfirst');
+
+
+% -- lever arm 4 w.r.t. robot base frame
+qo_base_laj4 = quaternion([0.50000649690628, -0.49999350309372, 0.49999350309372, 0.50000649690628]);
+t_base_laj4 = [-0.31597924232483, 0.22100029885769, -0.099319130182266];
+
+dq_base_laj4 = DualQuaternion.transform(qo_base_laj4, t_base_laj4, 'trfirst');
+
+
+
 %% Manipulator frames
 
 % -- manipulator joint 1 w.r.t. manipulator base
@@ -107,7 +136,8 @@ dq_arm_arr = {dq_gen3base_j0, dq_j0_j1, dq_j1_j2, dq_j2_j3, dq_j3_j4, dq_j4_j5, 
 
 %% Saving variables
 
-save('model_dq', 'dq_world', 'dq_world_base', 'dq_base_arm','dq_arm_arr', 'dq_j7_tcp');
+save('model_dq', 'dq_world', 'dq_world_base', 'dq_base_arm','dq_arm_arr', 'dq_j7_tcp', ...
+    'dq_base_laj1', 'dq_base_laj2', 'dq_base_laj3', 'dq_base_laj4');
 
 clear;
 load('model_dq.mat');
