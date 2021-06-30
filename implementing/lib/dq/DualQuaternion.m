@@ -13,9 +13,20 @@ classdef DualQuaternion
         % adjoint operator
             r = q * h * q.conj;
         end
+        
+        
+        function r = dq_dot(lhs, rhs)
+        % computes the cross product between dual quaternions
+            r = 0.5 * (lhs.conj*rhs + rhs.conj*lhs);
+        end
+        
+        function r = dq_cross(lhs, rhs)
+        % computes the cross product between dual quaternions
+            r = 0.5 * (lhs*rhs - rhs.conj*lhs.conj);
+        end
 
         
-         function ret = pureRotation(varargin)
+        function ret = pureRotation(varargin)
         % Sets a pure rotation dual quaternion
         % rot <quaternion, rotm(3x3)>: rotation object
             
@@ -105,7 +116,19 @@ classdef DualQuaternion
                 
         end
         
+        
+        %% Auxiliary functions
+        function ret = sig(v_in)
+        % Returns the signal of the input value
+            if v_in >=0
+                ret = 1;
+            else
+                ret = -1;
+            end
+        end
+        
     end % end of static methods
+    
     
     methods
         
@@ -184,7 +207,8 @@ classdef DualQuaternion
         % Normalizes the dual quaternion
             
            % computing the primary part quaternion magnitude
-           mag = dot(dq_in.q_p.compact, dq_in.q_p.compact);
+           mag = dq_in.norm;
+%          mag = dot(dq_in.q_p.compact, dq_in.q_p.compact);
             
            % normalizing both primary and dual parts
            r_p = dq_in.q_p * (1/mag);
@@ -263,15 +287,82 @@ classdef DualQuaternion
             
         end
         
+        
+        function ret = dot(obj, rhs)
+        % computes the cross product between dual quaternions
+            ret = 0.5 * (obj.conj*rhs + rhs.conj*obj);
+        end
+        
+        
+        function ret = cross(obj, rhs)
+        % computes the cross product between dual quaternions
+            ret = 0.5 * (obj*rhs - rhs.conj*obj.conj);
+        end
+        
 
        %% === CONVERSIONS AND EXTRACTIONS
        
        function tr = extractTranslation(obj)
-       % Extracts the translation vector from the dual quaternion
+       % Extracts the translation vector from the dual quaternion pose
+       % transform
        
            q_tr = (obj.q_d * 2) * (obj.q_p.conj);
            aux = q_tr.compact;
            tr = aux(2:end);
+       end
+       
+       
+       function [n, theta] = extractRotationComponents(obj)
+       % Extracts the rotation components from the dual quaternion pose
+       % transform
+       % formula comes from q_rot = cos(theta/2) + sin(theta/2)[n_x i + n_y j + n_z k]
+        
+           % rectifing input dual quaternion for 0 < theta < pi
+           aux = obj.rectify;
+       
+           % Extracting primary component into a array format
+           aux = aux.compact;
+           q_rot = aux(1:4);
+           
+           % computing the rotating angle
+           theta = norm(2 * acos(q_rot(1)))
+           
+           % computing the rotating axis vector
+           if abs(theta) > 1e-3 
+               
+               % computing n vector based on rotation quaternion formula
+               aux_sin_theta = asin(theta/2);
+               
+               % computing n components
+               n_x = DualQuaternion.sig(q_rot(2)) * (norm(q_rot(2)) / aux_sin_theta);
+               n_y = DualQuaternion.sig(q_rot(3)) * (norm(q_rot(3)) / aux_sin_theta);
+               n_z = DualQuaternion.sig(q_rot(4)) * (norm(q_rot(4)) / aux_sin_theta);
+               
+               % mounting n vector
+               n = [n_x, n_y, n_z];
+               
+               % normalizing n
+               n = n/norm(n);
+               
+           else
+               n = [0, 0, 0];
+           end
+           
+       end
+       
+       
+       function [tr, n, theta] = extractTransformComponents(obj)
+       % return a dual quaternion transform components into translation
+       % vector, n vector axis and theta rotation axis and angle
+       % respectively
+       
+           % extracting translation
+           tr = obj.extractTranslation;
+
+           % extracting rotation components
+           [n, theta] = obj.extractRotationComponents;
+
+       
        end
        
        
@@ -316,6 +407,15 @@ classdef DualQuaternion
                 error('dualquaternion:purerotation:invalidinput','Invalid input. Insert a numeric integer input');
             end
        end
+
+       
+       function ret = norm(obj)
+       % Return the dual quaternion norm
+           ret = dot(obj.q_p.compact, obj.q_p.compact);
+       end
+       
+       
+       
               
       %% === INTERFACES
      
