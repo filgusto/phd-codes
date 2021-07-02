@@ -17,12 +17,16 @@ r_tpc.pose_vel_mani.adr = '/rosi/cheat/pose_vel_mani';
 r_tpc.pose_vel_mani.msg = 'bj_libraries/DualQuaternionStamped';
 
 % ROSI arms - Sub - Angular position
-r_tpc.pos_arms.adr = '/rosi/sensor/pos_arms';
-r_tpc.pos_arms.msg = 'sim_rosi/RosiMovementArray';
+r_tpc.arms_pos.adr = '/rosi/sensor/arms_pos';
+r_tpc.arms_pos.msg = 'sim_rosi/RosiMovementHeader';
+
+% ROSI arms - Sub - Torque
+r_tpc.arms_torque.adr = '/rosi/sensor/arms_torque';
+r_tpc.arms_torque.msg = 'sim_rosi/RosiMovementHeader';
 
 % ROSI traction - Sub - Angular position
-r_tpc.pos_traction.adr = '/rosi/sensor/pos_traction';
-r_tpc.pos_traction.msg = 'sim_rosi/RosiMovementArray';
+r_tpc.pos_traction.adr = '/rosi/sensor/traction_pos';
+r_tpc.pos_traction.msg = 'sim_rosi/RosiMovementHeader';
 
 % ROSI GPS - Sub - NavSat info
 r_tpc.gps.adr = '/sensor/gps';
@@ -33,13 +37,17 @@ r_tpc.imu.adr = '/sensor/imu';
 r_tpc.imu.msg = 'sensor_msgs/Imu';
 
 % ROSI arms - Pub - Angular speed
-r_tpc.speed_arms.adr = '/rosi/cmd/speed_arms';
-r_tpc.speed_arms.msg = 'sim_rosi/RosiMovementArray';
+r_tpc.arms_speed.adr = '/rosi/cmd/arms_speed';
+r_tpc.arms_speed.msg = 'sim_rosi/RosiMovementHeader';
+
+% ROSI arms - Pub - Angular position
+r_tpc.position_arms.adr = '/rosi/cmd/arms_position';
+r_tpc.position_arms.msg = 'sim_rosi/RosiMovementHeader';
 
 
 % ROSI traction - Pub - Angular speed
 r_tpc.speed_traction.adr = '/rosi/cmd/speed_traction';
-r_tpc.speed_traction.msg = 'sim_rosi/RosiMovementArray';
+r_tpc.speed_traction.msg = 'sim_rosi/RosiMovementHeader';
 
 
 
