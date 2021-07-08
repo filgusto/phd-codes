@@ -325,7 +325,7 @@ classdef DualQuaternion
            q_rot = aux(1:4);
            
            % computing the rotating angle
-           theta = norm(2 * acos(q_rot(1)))
+           theta = norm(2 * acos(q_rot(1)));
            
            % computing the rotating axis vector
            if abs(theta) > 1e-3 
@@ -345,7 +345,7 @@ classdef DualQuaternion
                n = n/norm(n);
                
            else
-               n = [0, 0, 0];
+               n = [NaN, NaN, NaN];
            end
            
        end

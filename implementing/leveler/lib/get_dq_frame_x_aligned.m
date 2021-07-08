@@ -27,7 +27,7 @@ function dq_ret = get_dq_frame_x_aligned(dq_in, dq_dir, dq_rot_vec)
     % computing angle between director and planar rotated director
     angle = -1 * sig(v_cross(3)) * acos(v_dot);
     
-    % extracting rotating unit vector
+    
     v_rot_vec = dq_rot_vec.extractTranslation;
     
     % mounting corresponding dual quaternion
