@@ -2,12 +2,12 @@ function dq_ret = get_dq_frame_x_aligned(dq_in, dq_dir, dq_rot_vec)
 % Finds a dq pose frame with x frame aligned to current x 
 % projection over the horizontal frame
 % Input
-% dq_in: current pose
-% dq_dir: pure translation dual quaternion containing the unit director vector
-% of the body frame. In a mobile base, this should be the front sens
-% director
-% dq_rot_vec: pure translation dual quaternion containing the unit
-% vector about wich the director vector rotates
+%   -dq_in: current pose
+%   -dq_dir: pure translation dual quaternion containing the unit director vector
+%        of the body frame. In a mobile base, this should be the front sens
+%       director
+%   -dq_rot_vec: pure translation dual quaternion containing the unit
+%       vector about wich the director vector rotates
 
     % finding current x vector
     dq_dir_rotated = dq_in * dq_dir * dq_in.conj;

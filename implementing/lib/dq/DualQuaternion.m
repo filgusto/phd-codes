@@ -43,13 +43,43 @@ classdef DualQuaternion
                         
                     % mounts using a rotation matrix as input
                     elseif isnumeric(varargin{1})
-                        % checks size
-                        [rot_m, rot_n] = size(varargin{1})
-                        if rot_m == 3 & rot_n == 3 & det(varargin{1}) == 1
+                        % extracts input size
+                        [in_m, in_n] = size(varargin{1});
+                        
+                        % in case of numeric input is a rotation matrix
+                        if in_m == 3 & in_n == 3 & det(varargin{1}) == 1
                             q_p = rotm2quat(varargin{1});
-                            q_d = quaternion([0, 0, 0, 0]);;
+                            q_d = quaternion([0, 0, 0, 0]);
+                            
+                        % in case of roll pitch yaw vector input
+                        elseif in_m == 1 & in_n == 3 
+                            
+                            % expliciting input components
+                            v_in = varargin{1};
+                            roll = v_in(1);
+                            pitch = v_in(2);
+                            yaw = v_in(3);
+                            
+                            % sines and cosines pre-computation
+                            cr = cos(roll * 0.5);
+                            sr = sin(roll * 0.5);
+                            cp = cos(pitch * 0.5);
+                            sp = sin(pitch * 0.5);
+                            cy = cos(yaw * 0.5);
+                            sy = sin(yaw * 0.5);
+                            
+                            % computing converted quaternion components
+                            w = (cr * cp * cy) + (sr * sp * sy);
+                            x = (sr * cp * cy) - (cr * sp * sy);
+                            y = (cr * sp * cy) + (sr * cp * sy);
+                            z = (cr * cp * sy) - (sr * sp * cy);
+                            
+                            % mounting returning dual quaternion components
+                            q_p = quaternion([w x y z]);
+                            q_d = quaternion([0, 0, 0, 0]);
+                            
                         else
-                            error('dualquaternion:purerotation:invalidrotationmatrix','Invalid rotation matrix');
+                            error('dualquaternion:purerotation:invalidrotationmatrix','Invalid rotation matrix or roll pitch yaw angles vector ');
                         end
                     else
                         error('dualquaternion:purerotation:invalidinput','Invalid input. Insert a quaternion or rotation matrix');
@@ -116,16 +146,6 @@ classdef DualQuaternion
                 
         end
         
-        
-        %% Auxiliary functions
-        function ret = sig(v_in)
-        % Returns the signal of the input value
-            if v_in >=0
-                ret = 1;
-            else
-                ret = -1;
-            end
-        end
         
     end % end of static methods
     
@@ -312,9 +332,9 @@ classdef DualQuaternion
        end
        
        
-       function [n, theta] = extractRotationComponents(obj)
-       % Extracts the rotation components from the dual quaternion pose
-       % transform
+       function [n, theta] = extractRotationDirectorVecAndAngle(obj)
+       % Extracts the rotation components director vector and angle from
+       % from the dual quaternion orientation component (primary)
        % formula comes from q_rot = cos(theta/2) + sin(theta/2)[n_x i + n_y j + n_z k]
         
            % rectifing input dual quaternion for 0 < theta < pi
@@ -325,18 +345,22 @@ classdef DualQuaternion
            q_rot = aux(1:4);
            
            % computing the rotating angle
-           theta = norm(2 * acos(q_rot(1)));
+%            theta = norm(2 * acos(q_rot(1)));
+           theta = 2 * acos(q_rot(1));
            
-           % computing the rotating axis vector
+           % computingthe rotating axis vector
            if abs(theta) > 1e-3 
                
                % computing n vector based on rotation quaternion formula
                aux_sin_theta = asin(theta/2);
                
                % computing n components
-               n_x = DualQuaternion.sig(q_rot(2)) * (norm(q_rot(2)) / aux_sin_theta);
-               n_y = DualQuaternion.sig(q_rot(3)) * (norm(q_rot(3)) / aux_sin_theta);
-               n_z = DualQuaternion.sig(q_rot(4)) * (norm(q_rot(4)) / aux_sin_theta);
+%                n_x = sig(q_rot(2)) * (norm(q_rot(2)) / aux_sin_theta);
+%                n_y = sig(q_rot(3)) * (norm(q_rot(3)) / aux_sin_theta);
+%                n_z = sig(q_rot(4)) * (norm(q_rot(4)) / aux_sin_theta);
+               n_x = q_rot(2) / aux_sin_theta;
+               n_y = q_rot(3) / aux_sin_theta;
+               n_z = q_rot(4) / aux_sin_theta;
                
                % mounting n vector
                n = [n_x, n_y, n_z];
@@ -351,18 +375,54 @@ classdef DualQuaternion
        end
        
        
-       function [tr, n, theta] = extractTransformComponents(obj)
+       function ret_rpy = extractRotationRPY(obj)
+       % Extracts the rotation component into euler angles (roll pitch yaw) format
+       % got from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+       
+            % extracts orientation quaternion from the pose dual quaternion
+            q_rot = obj.q_p;
+            q_rot = q_rot.compact;
+            
+            % expanding for didactic purpose
+            w = q_rot(1);
+            x = q_rot(2);
+            y = q_rot(3);
+            z = q_rot(4);
+            
+            % roll
+            sinr_cosp = 2 * (w*x + y*z);
+            cosr_cosp = 1 - 2 * (x*x + y*y);
+            roll = atan2(sinr_cosp, cosr_cosp);
+            
+            % pitch
+            sinp = 2 * (w*y - z*x);
+            if abs(sinp) >= 1
+                pitch = pi/2 * sign(sinp);
+            else
+                pitch = asin(sinp);
+            end
+            
+            % yaw
+            siny_cosp = 2 * (w*z + x*y);
+            cosy_cosp = 1 - 2 * (y*y + z*z);
+            yaw = atan2(siny_cosp, cosy_cosp);
+       
+            % mounting returning component
+            ret_rpy = [roll, pitch, yaw];
+            
+       end
+       
+       
+       function [tr, rpy] = extractTransformComponents(obj)
        % return a dual quaternion transform components into translation
-       % vector, n vector axis and theta rotation axis and angle
-       % respectively
+       % and orientation roll pitch yaw decomposition
        
            % extracting translation
            tr = obj.extractTranslation;
+           
+           % extracting roll pitch yaw
+           rpy = obj.extractRotationRPY;
 
-           % extracting rotation components
-           [n, theta] = obj.extractRotationComponents;
-
-       
        end
        
        

@@ -46,3 +46,6 @@ obj/
 # Matlab generated
 *.mat
 *.m~
+
+# results data
+#implementing/leveler/res
